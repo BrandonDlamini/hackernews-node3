@@ -1,5 +1,6 @@
 type Query {
     link(id: ID!) :Link 
+    feed: [Link!]!
 }
 
 type Link{
@@ -10,6 +11,6 @@ type Link{
 
 type Mutation {
     updateLink(id:ID!, url:String, description: String): Link 
-
+    deleteLink(id:ID!): Link
     
 }

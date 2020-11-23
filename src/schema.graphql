@@ -1,0 +1,15 @@
+type Query {
+    link(id: ID!) :Link 
+}
+
+type Link{
+    id: ID!
+    description: String!
+    url: String!
+}
+
+type Mutation {
+    updateLink(id:ID!, url:String, description: String): Link 
+
+    
+}

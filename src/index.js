@@ -1,4 +1,5 @@
 const { GraphQLServer } = require('graphql-yoga')
+const {PrismaClient} = require('@prisma/client')
 
 
 let links = [{
@@ -13,33 +14,14 @@ let links = [{
 }
 ]
 
-let idCount = links.length 
-
-/*const resolvers = {
-    Query: {
-        info: () => `This is the API of a hackerbews Clone`,
-        feed: ()=> links,
-    },
-
-    Mutation: {
-        post: (parent, args) => {
-            const link = {
-                id: `link-${idCount++}`,
-                description: args.description,
-                url: args.url,
-            }
-            links.push(link)
-
-            return link
-        }
-    }
-}
-*/
-
-
 const resolvers ={
     Query: {
-        feed: ()=> links,
+
+        info: () => `This is the API of a hackerbews Clone`,
+        
+        feed: async(parent, args, context)=> {
+            return context.prisma.link.findMany()
+        },
         link: (parent, args)=> {
             
             const linkFound = links.find( link => link.id === args.id);
@@ -49,6 +31,18 @@ const resolvers ={
     },
 
     Mutation: {
+
+        post: (parent, args, context, info) => {
+            const newLink = context.prisma.link.create({
+                data: {
+                    url: args.url,
+                    description:args.description
+                },
+            })
+            
+            return newLink
+            
+        },
 
         
         updateLink: (root, args) => {
@@ -75,12 +69,17 @@ const resolvers ={
 }
 
 
-
+const prisma = new PrismaClient()
 
 
 const server =  new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
+        context: request => {
+            return{
+                ...request,prisma
+            }
+    }
 })
 
 server.start(()=> console.log(`Server is running in http://localhost:4000`))

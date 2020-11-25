@@ -4,11 +4,11 @@ const APP_SECRET = 'GraphQL-is-aw3some'
 function getUserId(context) {
     const Authorization = context.request.get('Authorization')
 
-    if (Auhtorisation) {
+    if (Authorization) {
 
-        const token = Authorization.replace('Bearer', '')
+        const token = Authorization.replace('Bearer ', '')
 
-        const {userId} = jwt.verify(token,APP_SECRET)
+        const {userId} = jwt.verify(token, APP_SECRET)
 
         return userId
     }
@@ -16,7 +16,7 @@ function getUserId(context) {
     throw new Error('Not Authenticated')
 }
 
-modules.exports = {
+module.exports = {
     APP_SECRET,
     getUserId,
 }

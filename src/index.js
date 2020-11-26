@@ -5,6 +5,12 @@ const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
 const User = require('./resolvers/User')
 const Link = require('./resolvers/Link')
+const Subscription = require('./resolvers/Subscription')
+const Vote = require('./resolvers/Vote')
+
+const {PubSub} = require ('graphql-yoga')
+
+const pubsub = new PubSub()
 
 
 let links = [{
@@ -23,7 +29,9 @@ const resolvers ={
     Query,
     Mutation,
     User,
-    Link
+    Link,
+    Subscription,
+    Vote,
 }
    
         /*updateLink: (root, args) => {
@@ -56,7 +64,7 @@ const server =  new GraphQLServer({
     resolvers,
         context: request => {
             return{
-                ...request,prisma
+                ...request,prisma,pubsub
             }
     },
 })
